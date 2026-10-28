@@ -24,9 +24,6 @@ function mountLeak() {
   const load = () => import('./panel.js')
   load()
 
-  // Used by the reproduction steps to check whether the node was collected.
-  window.__probe = new WeakRef(el)
-
   return () => el.remove()
 }
 

@@ -26,12 +26,13 @@ Open the served URL, then:
    `<link rel="stylesheet">` and attaches `load` / `error` listeners to it.
 2. Click **unmount**. The `<div>` is removed from the document.
 3. Open DevTools → Memory → click **Collect garbage** twice.
-4. Evaluate `window.__probe.deref()` in the console.
+4. Take a heap snapshot and filter for `Detached` (the node is a `<div>` with 100
+   `<span>` children).
 
-**Actual:** it still returns the detached element, and the node shows up under
-*Detached* in a heap snapshot.
+**Actual:** the `<div>` is still listed as a detached node, together with its
+100 `<span>` children.
 
-**Expected:** `undefined` — nothing references the node anymore.
+**Expected:** it is gone — nothing references the node anymore.
 
 ## Control experiment
 
@@ -51,7 +52,7 @@ function mountLeak() {
 }
 ```
 
-Rebuild, repeat steps 1–4 → `window.__probe.deref()` returns `undefined`.
+Rebuild, repeat steps 1–4 → the detached nodes are gone.
 
 This shows the leak depends on *where* the loader is defined, not on the loader
 itself: `__vitePreload()` captures it, and the listener closure captures the
